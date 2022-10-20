@@ -1,0 +1,3 @@
+CS 225 Class notes: 10/20/2022
+
+Talked about git.
