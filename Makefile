@@ -20,4 +20,4 @@ clean: clean_src clean_test
 	find . -name '*~' -delete
 
 zip: clean
-	zip -r paystation.zip paystation test makefile
+	zip -r paystation.zip paystation test Makefile
