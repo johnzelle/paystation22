@@ -2,13 +2,17 @@
 
 import unittest
 
-from paystation.domain import PayStation, IllegalCoinException, Receipt
+from paystation.domain import (PayStation,
+                               IllegalCoinException,
+                               Receipt,
+                               linear_rate_strategy
+                               )
 
 
 class TestPayStation(unittest.TestCase):
 
     def setUp(self):
-        self.ps = PayStation()
+        self.ps = PayStation(linear_rate_strategy)
 
     def _insert_coins(self, coins):
         for coin in coins:

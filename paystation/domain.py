@@ -9,7 +9,8 @@ class PayStation:
 
     LEGAL_COINS = [5, 10, 25]
 
-    def __init__(self):
+    def __init__(self, rate_strategy_fn):
+        self._calculate_time = rate_strategy_fn
         self._reset()
 
     def add_payment(self, coinvalue):
@@ -39,7 +40,8 @@ class PayStation:
         self._reset()
 
     def _time_bought(self):
-        return self._coins_inserted // 5 * 2
+        return self._calculate_time(self._coins_inserted)
+        # return self._coins_inserted // 5 * 2
 
     def _reset(self):
         self._coins_inserted = 0
@@ -49,3 +51,10 @@ class Receipt:
 
     def __init__(self, value):
         self.value = value
+
+
+# Rate Strategies
+
+def linear_rate_strategy(amount):
+    """ 5 cents buys 2 minutes """
+    return amount // 5 * 2
