@@ -1,5 +1,7 @@
 # paystation.py
 
+from datetime import datetime
+
 class IllegalCoinException(Exception):
     pass
 
@@ -66,3 +68,22 @@ def progressive_rate_strategy(amount):
     if amount > 150:
         return 60 + (amount-150)//5 * 1.5
     return amount // 5 * 2
+
+
+def is_weekend():
+    today = datetime.now()
+    return today.weekday() > 4
+
+
+class AlternatingRateStrategy:
+
+    def __init__(self, dec_strategy, weekend_rate, weekday_rate):
+        self._is_weekend = dec_strategy
+        self._weekend_rate_strat = weekend_rate
+        self._weekday_rate_strat = weekday_rate
+
+    def __call__(self, amount):
+        if self._is_weekend():
+            return self._weekend_rate_strat(amount)
+        else:
+            return self._weekday_rate_strat(amount)
