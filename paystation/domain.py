@@ -3,6 +3,7 @@
 class IllegalCoinException(Exception):
     pass
 
+
 class PayStation:
     """Implements the 'business logic' of a parking pay  station.
     """
@@ -15,7 +16,7 @@ class PayStation:
 
     def add_payment(self, coinvalue):
         """Adds coinvalue in payment to the pay station
-     
+
         pre: coinvalue is an int representing a legal coin
         note: raises IllegalCoinException if coinvalue invalid
         """
@@ -29,11 +30,11 @@ class PayStation:
 
     def buy(self):
         """Terminates transaction and returns Receipt"""
-        
+
         receipt = Receipt(self._time_bought())
         self._reset()
         return receipt
-    
+
     def cancel(self):
         """Terminates the transaction (resets machine)"""
 
@@ -41,25 +42,27 @@ class PayStation:
 
     def _time_bought(self):
         return self._calculate_time(self._coins_inserted)
-        #return self._coins_inserted // 5 * 2
 
     def _reset(self):
         self._coins_inserted = 0
-        
+
 
 class Receipt:
 
     def __init__(self, value):
         self.value = value
 
-#rate strategies
+
+# rate strategies
+
 def linear_rate_strategy(amount):
     """5 cents buys 2 minutes"""
-    return amount //5 * 2
+    return amount // 5 * 2
+
 
 def progressive_rate_strategy(amount):
-    if amount >350:
+    if amount > 350:
         return 120 + (amount-350)//5
-    if amount >150:
+    if amount > 150:
         return 60 + (amount-150)//5 * 1.5
     return amount // 5 * 2

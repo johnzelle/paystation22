@@ -31,7 +31,7 @@ class TestPayStation(unittest.TestCase):
 
     def test_displays_time_for_5_and_25_cents(self):
         self._insert_coins([5, 25])
-        self.assertEqual(5+ 25, self.ps.read_display())   
+        self.assertEqual(5 + 25, self.ps.read_display())   
 
     def test_reject_illegal_coin(self):
         with self.assertRaises(IllegalCoinException):
