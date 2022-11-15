@@ -1,6 +1,7 @@
 # test_rate_strategies.py
 
 import unittest
+from unittest.mock import Mock
 
 from paystation.domain import (linear_rate_strategy,
                                progressive_rate_strategy,
@@ -57,19 +58,24 @@ class TestAlternatingRateStrategy(unittest.TestCase):
     def fake_decision_strategy_always_false(self):
         return False
 
+    class FakeDecisionStrategy:
+        def __call__(self):
+            return self.return_value
+
+    def setUp(self):
+        self.decision_strategy = self.FakeDecisionStrategy()
+        self.ars = AlternatingRateStrategy(self.decision_strategy,
+                                           self.fake_rate_strategy_always_30,
+                                           self.fake_rate_strategy_always_60
+                                           )
+
     def test_uses_correct_strategy_on_weekend(self):
-        ars = AlternatingRateStrategy(self.fake_decision_strategy_always_true,
-                                      self.fake_rate_strategy_always_30,
-                                      self.fake_rate_strategy_always_60
-                                      )
-        self.assertEqual(30, ars(500))
+        self.decision_strategy.return_value = True
+        self.assertEqual(30, self.ars(500))
 
     def test_uses_correct_strategy_on_weekday(self):
-        ars = AlternatingRateStrategy(self.fake_decision_strategy_always_false,
-                                      self.fake_rate_strategy_always_30,
-                                      self.fake_rate_strategy_always_60
-                                      )
-        self.assertEqual(60, ars(500))
+        self.decision_strategy.return_value = False
+        self.assertEqual(60, self.ars(500))
 
     def test_is_weekend_returns_boolean(self):
         self.assertIn(is_weekend(), [True, False])
