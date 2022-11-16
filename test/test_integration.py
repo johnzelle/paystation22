@@ -5,6 +5,7 @@ import unittest
 
 from paystation.domain import (PayStation,
                                linear_rate_strategy,
+                               LinearRateStrategy,
                                progressive_rate_strategy,
                                AlternatingRateStrategy,
                                is_weekend
@@ -22,6 +23,13 @@ class TestAlphaTownIntegration(unittest.TestCase):
         ps = PayStation(linear_rate_strategy)
         ps.add_payment(25)
         self.assertEqual(25//5*2, ps.read_display())
+
+    def test_paystation_new_linear_rate(self):
+        rate = LinearRateStrategy(200)
+        ps = PayStation(rate)
+        ps.add_payment(25)
+        self.assertEqual(rate(25), ps.read_display())
+        
 
 
 class TestBetaTownIntegration(unittest.TestCase):

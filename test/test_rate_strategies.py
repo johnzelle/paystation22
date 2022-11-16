@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import Mock
 
 from paystation.domain import (linear_rate_strategy,
+                               LinearRateStrategy,
                                progressive_rate_strategy,
                                AlternatingRateStrategy,
                                is_weekend
@@ -13,8 +14,18 @@ from paystation.domain import (linear_rate_strategy,
 class TestLinearRate(unittest.TestCase):
 
     def test_correct_value_for_100_cents(self):
+        # using "old-fashioned" linear_rate_strategy
         lrs = linear_rate_strategy
         self.assertEqual(100 // 5 * 2, lrs(100))
+
+    def test_150_gets_one_hour(self):
+        # using new LinearRateStrategy class
+        lrs = LinearRateStrategy(150)
+        self.assertEqual(60, lrs(150))
+
+    def test_200_gets_one_hour(self):
+        lrs = LinearRateStrategy(200)
+        self.assertEqual(60, lrs(200))
 
 
 class TestProgressiveRate(unittest.TestCase):
