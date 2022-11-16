@@ -52,18 +52,8 @@ class TestAlternatingRateStrategy(unittest.TestCase):
     def fake_rate_strategy_always_60(self, amount):
         return 60
 
-    def fake_decision_strategy_always_true(self):
-        return True
-
-    def fake_decision_strategy_always_false(self):
-        return False
-
-    class FakeDecisionStrategy:
-        def __call__(self):
-            return self.return_value
-
     def setUp(self):
-        self.decision_strategy = self.FakeDecisionStrategy()
+        self.decision_strategy = Mock()
         self.ars = AlternatingRateStrategy(self.decision_strategy,
                                            self.fake_rate_strategy_always_30,
                                            self.fake_rate_strategy_always_60
