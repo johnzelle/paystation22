@@ -58,24 +58,25 @@ class Receipt:
 # rate strategies
 
 class LinearRateStrategy:
-    """5 cents buys 2 minutes"""
 
     def __init__(self, cents_per_hour):
         self._center_per_hour = cents_per_hour
-  
+
     def __call__(self, amount):
         return amount / self._center_per_hour * 60
 
 
 # for backwards compatibility linear_rate_strategy is $1.50 an hour
+# (5 cents buys 2 minutes)
+
 linear_rate_strategy = LinearRateStrategy(150)
 
 
 def progressive_rate_strategy(amount):
     if amount > 350:
-        return 120 + (amount-350)//5
+        return 120 + (amount-350) // 5
     if amount > 150:
-        return 60 + (amount-150)//5 * 1.5
+        return 60 + (amount-150) // 5 * 1.5
     return amount // 5 * 2
 
 
