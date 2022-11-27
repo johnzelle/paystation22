@@ -12,8 +12,8 @@ class PayStation:
 
     LEGAL_COINS = [5, 10, 25]
 
-    def __init__(self, rate_strategy_fn):
-        self._calculate_time = rate_strategy_fn
+    def __init__(self, factory):
+        self._calculate_time = factory.create_rate_strategy()
         self._reset()
 
     def add_payment(self, coinvalue):
@@ -50,9 +50,24 @@ class PayStation:
 
 
 class Receipt:
+    template = \
+"""--------------------------------------------------
+-------  P A R K I N G   R E C E I P T     -------
+                Value {:03d} minutes.
+              Car parked at {:02d}:{:02d}
+--------------------------------------------------"""
 
-    def __init__(self, value):
+    def __init__(self, value, barcode=False):
         self.value = value
+        self.with_barcode = barcode
+
+    def print(self, stream):
+        now = datetime.now()
+        output = self.template.format(self.value, now.hour, now.minute)
+        print(output, file=stream)
+        if self.with_barcode:
+            print("||  | || | || ||| | ||| ||| | || ||", file=stream)
+        
 
 
 # rate strategies
@@ -97,3 +112,43 @@ class AlternatingRateStrategy:
             return self._weekend_rate_strat(amount)
         else:
             return self._weekday_rate_strat(amount)
+
+
+# Abstract Factories for PayStation variants
+class AlphaTownFactory:
+
+    def create_rate_strategy(self):
+        return LinearRateStrategy(150)
+
+    def create_receipt(self, amt):
+        return Receipt(amt)
+
+
+class BetaTownFactory:
+
+    def create_rate_strategy(self):
+        return progressive_rate_strategy
+
+    def create_receipt(self, amt):
+        return Receipt(amt, barcode=True)
+
+
+class TripoliFactory:
+
+    def create_rate_strategy(self):
+        return LinearRateStrategy(200)
+
+    def create_receipt(self, amt):
+        return Receipt(amt)
+
+    
+class GammaTownFactory:
+
+    def create_rate_strategy(self):
+        ars = AlternatingRateStrategy(is_weekend,
+                                      progressive_rate_strategy,
+                                      LinearRateStrategy(150))
+        return ars
+
+    def create_receipt(self, amt):
+        return Receipt(amt)

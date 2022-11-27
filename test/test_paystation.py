@@ -12,10 +12,19 @@ def one_to_one_rate_strategy(amount):
     return amount
 
 
+class TestTownFactory:
+
+    def create_rate_strategy(self):
+        return one_to_one_rate_strategy
+
+    def create_receipt(self, amt):
+        return Receipt(amt)
+
+
 class TestPayStation(unittest.TestCase):
 
     def setUp(self):
-        self.ps = PayStation(one_to_one_rate_strategy)
+        self.ps = PayStation(TestTownFactory())
 
     def _insert_coins(self, coins):
         for coin in coins:
@@ -42,10 +51,6 @@ class TestPayStation(unittest.TestCase):
         receipt = self.ps.buy()
         self.assertIsInstance(receipt, Receipt)
         self.assertEqual(5+10+25, receipt.value)
-
-    def test_receipt_stores_value(self):
-        receipt = Receipt(30)
-        self.assertEqual(30, receipt.value) 
 
     def test_correct_receipt_for_100_cents(self):
         self._insert_coins([25, 25, 25, 10, 10, 5])
