@@ -48,6 +48,11 @@ class TestBetaTownIntegration(unittest.TestCase):
         insert_coins(self.ps, [25])
         self.assertEqual(150//5*2 + 200//5*1.5 + 25//5, self.ps.read_display())
 
+    def test_barcode_receipt(self):
+        self.ps.add_payment(25)
+        rec = self.ps.buy()
+        self.assertTrue(rec.with_barcode)
+
 
 class TestGammaTownIntegration(unittest.TestCase):
 

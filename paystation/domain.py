@@ -14,6 +14,7 @@ class PayStation:
 
     def __init__(self, factory):
         self._calculate_time = factory.create_rate_strategy()
+        self._factory = factory
         self._reset()
 
     def add_payment(self, coinvalue):
@@ -33,7 +34,7 @@ class PayStation:
     def buy(self):
         """Terminates transaction and returns Receipt"""
 
-        receipt = Receipt(self._time_bought())
+        receipt = self._factory.create_receipt(self._time_bought())
         self._reset()
         return receipt
 
