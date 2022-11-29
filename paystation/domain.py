@@ -1,6 +1,7 @@
 # paystation.py
 
 from datetime import datetime
+import random
 
 class IllegalCoinException(Exception):
     pass
@@ -13,6 +14,7 @@ class PayStation:
     LEGAL_COINS = [5, 10, 25]
 
     def __init__(self, factory):
+        self.config_id = factory.config_id
         self._calculate_time = factory.create_rate_strategy()
         self._factory = factory
         self._reset()
@@ -44,7 +46,7 @@ class PayStation:
         self._reset()
 
     def _time_bought(self):
-        return self._calculate_time(self._coins_inserted)
+        return round(self._calculate_time(self._coins_inserted))
 
     def _reset(self):
         self._coins_inserted = 0
@@ -58,6 +60,8 @@ class Receipt:
               Car parked at {:02d}:{:02d}
 --------------------------------------------------"""
 
+ 
+
     def __init__(self, value, barcode=False):
         self.value = value
         self.with_barcode = barcode
@@ -67,8 +71,8 @@ class Receipt:
         output = self.template.format(self.value, now.hour, now.minute)
         print(output, file=stream)
         if self.with_barcode:
-            print("||  | || | || ||| | ||| ||| | || ||", file=stream)
-        
+            barcode = "".join([random.choice(" ||") for _ in range(50)])
+            print(barcode, file=stream)
 
 
 # rate strategies
@@ -118,6 +122,8 @@ class AlternatingRateStrategy:
 # Abstract Factories for PayStation variants
 class AlphaTownFactory:
 
+    config_id = "Alphatown"
+
     def create_rate_strategy(self):
         return LinearRateStrategy(150)
 
@@ -126,6 +132,8 @@ class AlphaTownFactory:
 
 
 class BetaTownFactory:
+
+    config_id = "Betatown"
 
     def create_rate_strategy(self):
         return progressive_rate_strategy
@@ -136,6 +144,8 @@ class BetaTownFactory:
 
 class TripoliFactory:
 
+    config_id = "Tripoli"
+
     def create_rate_strategy(self):
         return LinearRateStrategy(200)
 
@@ -144,6 +154,8 @@ class TripoliFactory:
 
     
 class GammaTownFactory:
+
+    config_id = "Gammatown"
 
     def create_rate_strategy(self):
         ars = AlternatingRateStrategy(is_weekend,
