@@ -14,6 +14,8 @@ def one_to_one_rate_strategy(amount):
 
 class TestTownFactory:
 
+    config_id = "Testtown"
+
     def create_rate_strategy(self):
         return one_to_one_rate_strategy
 

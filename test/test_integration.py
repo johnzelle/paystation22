@@ -4,12 +4,12 @@ import unittest
 
 
 from paystation.domain import (PayStation,
-                               linear_rate_strategy,
-                               LinearRateStrategy,
-                               progressive_rate_strategy,
-                               AlternatingRateStrategy,
                                is_weekend,
-                               AlphaTownFactory,
+                               progressive_rate_strategy,
+                               LinearRateStrategy,
+                               linear_rate_strategy
+                               )
+from paystation.config import (AlphaTownFactory,
                                BetaTownFactory,
                                GammaTownFactory,
                                TripoliFactory
@@ -82,7 +82,7 @@ class TestTripoliIntegration(unittest.TestCase):
 
     def test_paystation_new_linear_rate(self):
         rate = LinearRateStrategy(200)
-        self.assertEqual(rate(25), self.ps.read_display())
+        self.assertEqual(round(rate(25)), self.ps.read_display())
 
     def test_std_receipt(self):
         rec = self.ps.buy()
